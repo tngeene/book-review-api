@@ -25,6 +25,7 @@ Route::get('user', 'AuthController@getAuthUser');
 // Books
 
 Route::apiResource('books', 'BookController');
+Route::post('books','BookController@store');
 Route::apiResource('posts', 'PostController');
 
 // Ratings

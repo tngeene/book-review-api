@@ -1,20 +1,16 @@
 <?php
 
 namespace App\Http\Controllers;
-use APP\Book;
-use Tymon\JWTAuth\Facades\JWTAuth as TymonJWTAuth;
-use Tymon\JWTAuth\JWTAuth;
-use App\Http\Resources\BookResource;
-use Exception;
+
+use App\Book;
 use Illuminate\Http\Request;
+use App\Http\Resources\BookResource;
 
 class BookController extends Controller
 {
-
-
    public function __construct()
    {
-   // $this->middleware('auth:api')->except(['index', 'show']);
+    $this->middleware('auth:api')->except(['index', 'show']);
    }
    
     /**
@@ -26,53 +22,82 @@ class BookController extends Controller
     {
       return BookResource::collection(Book::with('ratings')->paginate(25));
     }
-
+  /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function store(Request $request)
     {
-      $book  = $request->isMethod('put') ? book::findOrFail($request->id) : new Book;
-      $book->title = $request->input('title');
-      $book->author  = $request->input('author');
-      $book ->description = $request->input('description');
-      $book->user_id = auth()->user()->id;
-      $request->user()->books();
+        $this->validate($request, [
+            'title' => 'required',
+            'description' => 'required',
+            'author' => 'required',
+        ]);
+        $book = new Book;
+        $book->user_id = $request->user()->id;
+        $book->title = $request->title;
+        $book->description = $request->description;
+        $book->author = $request->author;
+        $book->save();
 
-      if ($book->save()) {
-          return new BookResource($book);
-      }
-      /*
-      $book = new Book;
-      $book->user_id = auth()->user()->id;
-      $request->user()->books();
-      $book->title = $request->title;
-      $book->author = $request->author;
-      $book->description = $request->description;
-      $book->save();
-
-      return new BookResource($book);
-      */
-    }
-
-    public function show(Book $book)
+        return new BookResource($book);
+}
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show(book $book)
     {
-      return new BookResource($book);
+        return new BookResource($book);
     }
 
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function update(Request $request, Book $book)
+
     {
+
       // check if currently authenticated user is the owner of the book
+
       if ($request->user()->id !== $book->user_id) {
+
         return response()->json(['error' => 'You can only edit your own books.'], 403);
+
       }
+
+
 
       $book->update($request->only(['title','author', 'description']));
 
+
+
       return new BookResource($book);
     }
 
-    public function destroy(Book $book)
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(book $book)
     {
-      $book->delete();
-
-      return response()->json(null, 204);
+        $book ->delete();
+        return response()->json(null,204);
     }
 }
+
+
+
+
+
+
