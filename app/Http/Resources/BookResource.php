@@ -14,7 +14,7 @@ class BookResource extends JsonResource
      */
     public function toArray($request)
     {
-        //trandsforms the resource into an array made up of the attributes to be converted to JSON
+        //transforms the resource into an array made up of the attributes to be converted to JSON
         return [
             'id'=> $this->id,
             'title'=> $this->title,

@@ -89,8 +89,11 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(book $book)
+    public function destroy(Request $request,Book $book)
     {
+      if($request->user()->id != $book->user_id){
+        return response()->json(['error' => 'You can only delete your own books.'], 403);
+      }
         $book ->delete();
         return response()->json(null,204);
     }
