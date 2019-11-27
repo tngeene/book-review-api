@@ -28,19 +28,43 @@ class AuthController extends Controller
       $credentials = $request->only(['email', 'password']);
 
       if (!$token = auth()->attempt($credentials)) {
-        return response()->json(['error' => 'Unauthorized'], 401);
+        return response()->json([
+          'status' => 'error',
+          'error' => 'Unauthorized',
+          'msg' => 'Invalid Credentials' ], 401);
       }
 
-      return $this->respondWithToken($token);
+      return response([
+        'status' => 'success'
+    ])
+    ->header('Authorization', $token);
     }
     public function getAuthUser(Request $request)
     {
         return response()->json(auth()->user());
     }
+    public function user(Request $request)
+    {
+      $user = User::find(Auth::user()->id);
+      return response([
+        'status' => 'success',
+        'data' => $user
+      ]);
+    }
+      //checks that the current token is still valid
+       public function refresh()
+      {
+        return response([
+          'status' => 'success'
+        ]);
+      }
     public function logout()
     {
-        auth()->logout();
-        return response()->json(['message'=>'Successfully logged out']);
+      JWTAuth::invalidate();
+      return response([
+              'status' => 'success',
+              'msg' => 'Logged out Successfully.'
+          ], 200);
     }
     protected function respondWithToken($token)
     {
@@ -50,5 +74,4 @@ class AuthController extends Controller
         'expires_in' => auth()->factory()->getTTL() * 60
       ]);
     }
-    
 }

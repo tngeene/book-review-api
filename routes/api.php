@@ -14,10 +14,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('register', 'AuthController@register');
+Route::post('auth/register', 'AuthController@register');
 
-Route::post('login', 'AuthController@login');
-Route::get('logout', 'AuthController@logout');
+Route::post('auth/login', 'AuthController@login');
+Route::group(['middleware'=>'jwt.auth'], function(){
+    Route::get('auth/user','AuthController@user');
+    Route::get('auth/logout', 'AuthController@logout');
+});
+Route::group(['middleware'=>'jwt.refresh'],function(){
+    Route::get('auth/refresh','AuthController@refresh');
+});
+
 Route::get('user', 'AuthController@getAuthUser');
 
 
