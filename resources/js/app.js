@@ -7,20 +7,15 @@ import Dashboard from './components/Dashboard.vue';
 import Home from './components/Home.vue';
 import Register from './components/Register.vue';
 import Login from './components/Login.vue';
-
+import UploadBook from './components/UploadBook.vue';
+import EditBook from './components/EditBook.vue';
 
 Vue.use(VueRouter);
 Vue.use(VueAxios, axios);
 axios.defaults.baseURL = 'http://localhost:8000/api';
 
-//components
-//Vue.component('home', Home);
-//Vue.component('app', App);
-
-
-
-
 const router = new VueRouter({
+    
     routes: [
         {
             path: '/',
@@ -46,6 +41,20 @@ const router = new VueRouter({
             component: Dashboard,
             meta: {
                 auth: true
+            }
+        },{
+            path: '/upload',
+            name: 'upload',
+            component: UploadBook,
+            meta: {
+                auth:  true
+            }
+        },{
+            path: '/edit/:id',
+            name: 'edit',
+            component: EditBook,
+            meta: {
+                auth: true 
             }
         }
     ]

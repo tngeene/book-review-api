@@ -3,7 +3,8 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-       
+        <link href=" {{ mix('css/app.css') }}" rel="stylesheet">
+        <meta name="csrf-token" value="{{ csrf_token() }}" />
         <title>Book Review </title>
 
         <!-- Fonts -->
@@ -19,6 +20,6 @@
     <div class="container">
         <div id="app"></div>
     </div>
-    <script src="{{asset('js/app.js' )}}"></script>
+    <script src="{{mix('js/app.js' )}}"></script>
     </body>
 </html>
